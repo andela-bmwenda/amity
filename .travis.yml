@@ -16,3 +16,7 @@ script: nosetests
 
 notifications:
   email: false
+
+addons:
+    code_climate:
+        repo_token: 17acf4ffe96c6a7c63d356d970a140b5de8499321ab2c0cb2443a99711988e18
