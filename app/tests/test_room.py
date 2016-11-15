@@ -42,14 +42,16 @@ class TestRoomClass(unittest.TestCase):
         occupants = self.room.print_room("Krypton")
         self.assertEqual(occupants, "HARRY, JERRY, JAMES")
 
+    @patch.dict('app.room.office.Office.office_and_occupants',
+                {"ROOM NAME": ["MEMBER 1", "MEMBER 2", "MEMBER 3"]})
     def test_print_allocations(self):
         """Test that allocations are printed in the correct format"""
 
-        # out_put = "ROOM NAME" + '\n\n' + "-------------------------------------" + \
-        #     '\n' + "MEMBER 1, MEMBER 2, MEMBER 3"
-        # self.assertEqual(self.room.print_allocations(),
-        #                  out_put, msg="Incorrect format")
-        pass
+        out_put = "ROOM NAME" + '\n\n' + "-------------------------------------" + \
+            '\n' + "MEMBER 1, MEMBER 2, MEMBER 3"
+        return_value = self.room.print_allocations()
+        self.assertEqual(return_value,
+                         out_put, msg="Incorrect format")
 
 
 if __name__ == '__main__':
