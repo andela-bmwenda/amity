@@ -53,7 +53,7 @@ class Amity(object):
             person = Fellow(first_name, last_name, wants_accomodation)
         else:
             print("Invalid person role: " + role)
-            person = None
+            return
 
         allocated = False
         while not allocated:
@@ -76,6 +76,7 @@ class Amity(object):
                 print("No rooms available")
                 break
         if not allocated:
+            Amity.unallocated_members.append(person)
             print("{} was added to the waiting list".format(
                 person.first_name))
         else:
@@ -121,19 +122,18 @@ class Amity(object):
     def print_room(self, room_name):
         """Print names of all people in room_name"""
 
-        # check if the room_name exists. if not return an error
-        # if yes get room details from the respective room types
-        # print names of the people in the room.
-
-        for room in Amity.list_of_rooms:
-            if room.room_name == room_name:
-                print(room.room_name.upper() + '\n')
-                print("-----------------------------------------------------")
-                for occupant in room.occupants:
+        room =  [room for room in Amity.list_of_rooms if room.room_name.upper() == room_name.upper()]
+        if room:
+            room = room[0]
+            print(room.room_name.upper() + '\n')
+            print("-----------------------------------------------------")
+            for occupant in room.occupants:
                     print((occupant.first_name + " " +
                            occupant.last_name + '\t'), end=" ")
-            else:
-                print("{} does not exist in Amity".format(room_name))
+            print('\n')
+        else:
+            print("{} does not exist in Amity".format(room_name))
+            return
 
     def print_allocations(self):
 
