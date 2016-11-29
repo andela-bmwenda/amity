@@ -122,15 +122,16 @@ class Amity(object):
     def print_room(self, room_name):
         """Print names of all people in room_name"""
 
-        room =  [room for room in Amity.list_of_rooms if room.room_name.upper() == room_name.upper()]
+        room = [room for room in Amity.list_of_rooms if
+                room.room_name.upper() == room_name.upper()]
         if room:
             room = room[0]
-            print(room.room_name.upper() + '\n')
+            print("{} OCCUPANTS \n".format(room.room_name.upper()))
             print("-----------------------------------------------------")
             for occupant in room.occupants:
-                    print((occupant.first_name + " " +
-                           occupant.last_name + '\t'), end=" ")
-            print('\n')
+                print("\t{0} {1}\n".format(
+                    occupant.first_name, occupant.last_name)
+                )
         else:
             print("{} does not exist in Amity".format(room_name))
             return
@@ -142,7 +143,13 @@ class Amity(object):
         # print the key(room_name) and its occupants
         # if a room has no occupants, skip printing
         # format the output as required and print
-        pass
+        for room in Amity.list_of_rooms:
+            print(room.room_name.upper() + '\n')
+            print("-----------------------------------------------------")
+            for occupant in room.occupants:
+                print((occupant.first_name + " " +
+                       occupant.last_name + '\t'), end=" ")
+            print('\n')
 
     def load_people(self, path):
 
