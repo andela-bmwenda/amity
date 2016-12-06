@@ -2,14 +2,18 @@
 """
 Usage:
     amity create_room <room_name>...
-    amity add_person <first_name> <last_name> <role> [--accomodate=<N>]
+    amity add_person <first_name> <last_name> (Fellow | Staff) [--wants_accomodation=(Y | N)]
+    amity print_allocations [-o=filename]
+    amity reallocate_person <first_name> <last_name> <room_name>
     amity print_room <room_name>
+    amity print_unallocated
     amity (-i | --interactive)
     amity (-h | --help | --version)
 
 Options:
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
+    -a, --wants_accomodation=<opt>  Person wants accomodation [default: N]
 """
 
 import sys
@@ -59,28 +63,68 @@ class AmitySystem(cmd.Cmd):
     @docopt_cmd
     def do_create_room(self, args):
         """Usage: create_room <room_name>..."""
-        # print("Here are the rooms\n\t{}".format(args))
+
         rooms = args["<room_name>"]
-        # Amity.create_room(self, " ".join(rooms))
         for room in rooms:
-            Amity.create_room(self, room)
+            Amity().create_room(room)
 
     @docopt_cmd
     def do_add_person(self, args):
-        """Usage: add_person <first_name> <last_name> <role> [--accomodate=<N>]"""
+        """
+        Usage:
+            add_person <first_name> <last_name> (fellow | staff) [--wants_accomodation=<opt>]
+
+        Options:
+            -a, --wants_accomodation=<opt>  Wants accomodation [default: N]
+        """
         first_name = args["<first_name>"]
         last_name = args["<last_name>"]
-        role = args["<role>"]
-        # accomodate = args["[--accomodate]"]
-        # Amity.add_person(first_name, last_name, role)
-        Amity.add_person(self, first_name, last_name, role)
+        person_name = first_name + " " + last_name
+        if args["fellow"]:
+            role = "FELLOW"
+        else:
+            role = "STAFF"
+        accomodate = args["--wants_accomodation"].upper()
+        if accomodate == 'Y' or accomodate == 'N':
+            Amity().add_person(person_name, role, accomodate)
+        else:
+            print("Invalid accomodation option. Please enter Y/N")
+
+    @docopt_cmd
+    def do_reallocate_person(self, args):
+        """Usage: reallocate_person <first_name> <last_name> <room_name>"""
+
+        first_name = args["<first_name>"]
+        last_name = args["<last_name>"]
+        room_name = args["<room_name>"]
+        person_name = first_name + " " + last_name
+
+        Amity().reallocate_person(person_name, room_name)
+
+    @docopt_cmd
+    def do_print_allocations(self, args):
+        """
+        Usage: print_allocations [--output=<filename>]
+
+        Options:
+        -o, --output=<filename>  Print to file
+        """
+
+        filename = args["--output"]
+        Amity().print_allocations(filename)
+
+    @docopt_cmd
+    def do_print_unallocated(self, args):
+        """Usage: print_unallocated"""
+
+        Amity().print_unallocated()
 
     @docopt_cmd
     def do_print_room(self, args):
         """Usage: print_room <room_name>"""
 
         room_name = args["<room_name>"]
-        Amity.print_room(self, room_name)
+        Amity().print_room(room_name)
 
     def do_clear(self, arg):
         """Clears screen>"""
