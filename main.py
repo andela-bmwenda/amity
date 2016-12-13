@@ -3,10 +3,13 @@
 Usage:
     amity create_room <room_name>...
     amity add_person <first_name> <last_name> (Fellow | Staff) [--wants_accomodation=(Y | N)]
-    amity print_allocations [-o=filename]
+    amity print_allocations [-output=<filename>]
     amity reallocate_person <first_name> <last_name> <room_name>
     amity print_room <room_name>
     amity print_unallocated
+    amity load_people <filename>
+    amity save_state [--database=<sqlite_database>]
+    amity load_state
     amity (-i | --interactive)
     amity (-h | --help | --version)
 
@@ -14,13 +17,14 @@ Options:
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
     -a, --wants_accomodation=<opt>  Person wants accomodation [default: N]
+    -d, --database=<sqlite_database>  Save state to specified database [default: amity_db]
 """
 
 import sys
 import os
 import cmd
-from app.amity import Amity
 from docopt import docopt, DocoptExit
+from app.amity import Amity
 
 
 def docopt_cmd(func):
@@ -79,14 +83,13 @@ class AmitySystem(cmd.Cmd):
         """
         first_name = args["<first_name>"]
         last_name = args["<last_name>"]
-        person_name = first_name + " " + last_name
         if args["fellow"]:
             role = "FELLOW"
         else:
             role = "STAFF"
         accomodate = args["--wants_accomodation"].upper()
         if accomodate == 'Y' or accomodate == 'N':
-            Amity().add_person(person_name, role, accomodate)
+            Amity().add_person(first_name, last_name, role, accomodate)
         else:
             print("Invalid accomodation option. Please enter Y/N")
 
@@ -114,6 +117,14 @@ class AmitySystem(cmd.Cmd):
         Amity().print_allocations(filename)
 
     @docopt_cmd
+    def do_load_people(self, args):
+        """Usage: load_people <filename>"""
+
+        file = args["<filename>"]
+
+        Amity().load_people(file)
+
+    @docopt_cmd
     def do_print_unallocated(self, args):
         """Usage: print_unallocated"""
 
@@ -125,6 +136,25 @@ class AmitySystem(cmd.Cmd):
 
         room_name = args["<room_name>"]
         Amity().print_room(room_name)
+
+    @docopt_cmd
+    def do_save_state(self, args):
+        """
+        Usage: save_state [--database=<sqlite_database>]
+
+        Options:
+        -d, --database=<sqlite_database>  Save state to specified database [default: amity_db]       
+        """
+
+        db_name = args["--database"]
+        Amity().save_state(db_name)
+
+    @docopt_cmd
+    def do_load_state(self, args):
+        """Usage: load_state"""
+
+        Amity().load_state()
+
 
     def do_clear(self, arg):
         """Clears screen>"""
