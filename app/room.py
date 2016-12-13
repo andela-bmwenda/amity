@@ -1,7 +1,5 @@
 class Room(object):
-    """Room class that creates rooms in amity
-
-    """
+    """Base class for creating rooms in amity."""
 
     def __init__(self, room_name, room_type, capacity, occupants):
         self.room_name = room_name
@@ -11,7 +9,7 @@ class Room(object):
 
 
 class LivingSpace(Room):
-    """Creates living spaces and inherits from Room"""
+    """Creates living spaces and inherits from Room."""
 
     def __init__(self, room_name):
         super(LivingSpace, self).__init__(
@@ -19,7 +17,7 @@ class LivingSpace(Room):
 
 
 class Office(Room):
-    """Creates offices and inherits from room"""
+    """Creates offices and inherits from room."""
 
     def __init__(self, room_name):
         super(Office, self).__init__(
