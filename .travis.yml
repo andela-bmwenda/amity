@@ -10,8 +10,8 @@ install:
 script:
   nosetests --with-coverage
 
-after-success:
-  coveralls
+after_success:
+  - coveralls
 
 notifications:
   email: false
