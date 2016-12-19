@@ -1,3 +1,6 @@
 [![Build Status](https://travis-ci.org/andela-bmwenda/amity-cp1.svg?branch=develop)](https://travis-ci.org/andela-bmwenda/amity-cp1)[![Code Climate](https://codeclimate.com/github/andela-bmwenda/amity-cp1/badges/gpa.svg)](https://codeclimate.com/github/andela-bmwenda/amity-cp1)[![Coverage Status](https://coveralls.io/repos/github/andela-bmwenda/amity-cp1/badge.svg?branch=develop)](https://coveralls.io/github/andela-bmwenda/amity-cp1?branch=develop)[![Issue Count](https://codeclimate.com/github/andela-bmwenda/amity-cp1/badges/issue_count.svg)](https://codeclimate.com/github/andela-bmwenda/amity-cp1)
 # amity
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8545e9cf2e9840caae8c41a9f7ec7803)](https://www.codacy.com/app/boniface-mwenda/amity-cp1?utm_source=github.com&utm_medium=referral&utm_content=andela-bmwenda/amity-cp1&utm_campaign=badger)
+
 A command line application for allocating office space to users. 
