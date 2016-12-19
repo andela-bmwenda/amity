@@ -161,7 +161,7 @@ class AmitySystem(cmd.Cmd):
         Usage: save_state [--database=<sqlite_database>]
 
         Options:
-        -d, --database=<sqlite_database>  Save state to specified database [default: amity_db]       
+        -d, --database=<sqlite_database>  Save state to specified database [default: amity_db]    
         """
 
         db_name = args["--database"]
