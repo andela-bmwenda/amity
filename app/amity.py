@@ -7,6 +7,8 @@ from .person import Fellow, Staff
 from .room import Office, LivingSpace
 from app.db import AmityDb
 
+global db
+
 
 class Amity(object):
     """Main class for Amity app.
@@ -261,7 +263,6 @@ class Amity(object):
             return "No data"
         path = os.path.join(os.path.dirname(__file__), db_name + ".db")
         # Create db
-        global db
         db = AmityDb(db_name)
         db.create_tables()
 
