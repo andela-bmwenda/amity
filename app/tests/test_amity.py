@@ -212,7 +212,7 @@ class AmityTestCase(unittest.TestCase):
         self.amity.add_person("Mike", "Ross", "Fellow", "Y")
         self.amity.add_person("Hype", "Mann", "Fellow")
         res = self.amity.print_allocations(None)
-        self.assertEqual(res, "Print room successful")
+        self.assertEqual(res, "Print allocations successful")
 
     def test_print_unallocated_people_works(self):
         """Tests unallocated people are printed to screen"""
