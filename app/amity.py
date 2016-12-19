@@ -225,7 +225,6 @@ class Amity(object):
                 output += ('\n\n\n')
             else:
                 cprint("There are no allocations to display", 'yellow')
-                return
 
         print(output)
 
@@ -235,7 +234,7 @@ class Amity(object):
                 f.write(output)
             cprint("Successfully saved allocations data to {}".format(path), 'green')
             return "Allocations successfully saved to file"
-        return "Print room successful"
+        return "Print allocations successful"
 
     def load_people(self, filename):
         """Allocates people rooms from a plain text file."""
