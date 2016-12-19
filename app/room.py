@@ -7,6 +7,12 @@ class Room(object):
         self.capacity = capacity
         self.occupants = []
 
+    def full(self):
+        if len(self.occupants) < self.capacity:
+            return False
+        else:
+            return True
+
 
 class LivingSpace(Room):
     """Creates living spaces and inherits from Room."""
@@ -15,12 +21,6 @@ class LivingSpace(Room):
         super(LivingSpace, self).__init__(
             room_name, room_type="Living Space", capacity=4, occupants=[])
 
-    def full(self):
-        if len(self.occupants) < self.capacity:
-            return False
-        else:
-            return True
-
 
 class Office(Room):
     """Creates offices and inherits from room."""
@@ -28,9 +28,3 @@ class Office(Room):
     def __init__(self, room_name):
         super(Office, self).__init__(
             room_name, room_type="Office", capacity=6, occupants=[])
-
-    def full(self):
-        if len(self.occupants) < self.capacity:
-            return False
-        else:
-            return True
