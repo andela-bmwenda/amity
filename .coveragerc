@@ -1,11 +1,13 @@
 [run]
 branch = True
 include = app/*
-omit =
-    */tests/*
-    test_*
 
 [report]
+omit =
+    */python?.?/*
+    */site-packages/nose/*
+
+
 # Regexes for lines to exclude from consideration
 exclude_lines =
         # Have to re-enable the standard pragma

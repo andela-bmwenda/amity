@@ -4,6 +4,15 @@ __pycache__/
 
 
 # virtualenv
-venv/
+amity-venv/
 ENV/
-
+*.db
+*.pyc
+*.DS_Store
+trial.py
+amity_db
+.coverage
+cover/
+amity_todo
+app/allocations.txt
+app/sample.txt
