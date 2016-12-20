@@ -39,8 +39,8 @@ class AmityTestCase(unittest.TestCase):
 
         self.amity.list_of_rooms.append(self.living_space)
         self.living_space.occupants = ["Tom", "Dick", "Harry", "Johny"]
-        self.assertEqual(self.amity.allocate_room(self.fellow, "Y"),
-                         "Mike Jon was added to the waiting list")
+        self.amity.allocate_room(self.fellow, "Y")
+        self.assertEqual(len(self.amity.unallocated_members), 1)
         self.assertEqual(len(self.living_space.occupants), 4)
 
     def test_office_does_not_exceed_six_people(self):
@@ -50,17 +50,16 @@ class AmityTestCase(unittest.TestCase):
         self.office.occupants = ["alpha", "beta", "charlie",
                                  "delta", "echo", "foxtrot"]
         self.amity.allocate_room(self.staff, "N")
-        self.assertEqual(self.amity.allocate_room(self.staff, "N"),
-                         "Rick Man was added to the waiting list")
+        self.assertEqual(len(self.amity.unallocated_members), 1)
         self.assertEqual(len(self.office.occupants), 6)
 
     def test_staff_is_not_allocated_living_space(self):
         """Tests staff members can only be in offices"""
 
         self.amity.list_of_rooms.append(self.living_space)
-        res = self.amity.allocate_room(self.staff, "N")
-        self.assertEqual(res, "Rick Man was added to the waiting list")
-        self.assertEqual(len(self.office.occupants), 0)
+        self.amity.allocate_room(self.staff, "N")
+        self.assertEqual(len(self.amity.list_of_rooms[0].occupants), 0)
+        self.assertEqual(len(self.amity.unallocated_members), 1)
 
     def test_duplicate_rooms_are_not_added(self):
         """Tests rooms with same name are not allowed"""
@@ -69,12 +68,14 @@ class AmityTestCase(unittest.TestCase):
         self.assertEqual(self.amity.create_room("Swift", "L"),
                          "Room already exists")
 
-    def test_fellow_is_added_successfully(self):
+    def test_fellow_gets_office_by_default(self):
         """Tests fellow is created and allocated room"""
 
-        self.amity.list_of_rooms.append(self.living_space)
-        self.amity.add_person("Tom", "Riley", "Fellow", "N")
-        self.assertEqual(len(self.amity.allocated_members), 1)
+        self.amity.list_of_rooms.append(self.office)
+        self.amity.add_person("Tom", "Riley", "Fellow")
+        # self.assertEqual(len(self.amity.allocated_members), 1)
+        self.assertTrue(self.amity.list_of_rooms[0].occupants[0]
+                        .person_name == "Tom Riley".upper())
 
     def test_staff_member_is_added_successfully(self):
         """Tests staff member is created and allocated room"""
@@ -106,7 +107,7 @@ class AmityTestCase(unittest.TestCase):
         self.amity.add_person("Ledley", "Moore", "Staff")
         self.assertEqual(len(self.amity.unallocated_members), 2)
 
-    def test_fellow_gets_living_space_if_wants_room(self):
+    def test_fellow_gets_office_and_living_space_if_wants_room(self):
         """Tests fellow who wants accomodation gets a living space"""
 
         self.amity.list_of_rooms.append(self.living_space)
@@ -114,6 +115,8 @@ class AmityTestCase(unittest.TestCase):
         self.amity.add_person("Martin", "Luther", "Fellow", "Y")
         self.assertTrue(self.amity.allocated_members[0]
                         .person_name == "Martin Luther".upper())
+        self.assertEqual(self.amity.list_of_rooms[0].occupants[0].person_name, "MARTIN LUTHER")
+        self.assertEqual(self.amity.list_of_rooms[1].occupants[0].person_name, "MARTIN LUTHER")
 
     def test_cannot_reallocate_non_existent_person(self):
         """Tests members not allocated cannot be reallocated"""
