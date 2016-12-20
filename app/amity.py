@@ -57,59 +57,59 @@ class Amity(object):
 
         person = person
         wants_accomodation = wants_accomodation
-        allocated = False
+        has_office = False
+        has_living = False
         # Check if there are rooms
         if len(self.list_of_rooms):
-            # Make a list of available rooms depending on person role
-            available_rooms = []
+            # Make a list of available rooms
+            offices = []
+            living_spaces = []
             for room in self.list_of_rooms:
-                if (room.room_type == "Office" and not room.full()) \
-                        or (room.room_type == "Living Space" and not room.full()):
-                    available_rooms.append(room)
-
-            if person.role == "Staff":
-                available_rooms = [room for room in available_rooms if
-                                   room.room_type == "Office" and not room.full()]
-            if available_rooms:
-                room = random.choice(available_rooms)
+                if (room.room_type == "Office" and not room.full()):
+                    offices.append(room)
+                elif (room.room_type == "Living Space" and not room.full()):
+                    living_spaces.append(room)
+            # Allocate person an office
+            if offices:
+                room = random.choice(offices)
+                room.occupants.append(person)
+                has_office = True
             else:
-                pass
-            while not allocated:
-                # Allocate person a room randomly
-                if room.room_type == "Living Space" and not room.full() \
-                        and person.role == "Fellow" and wants_accomodation == 'Y':
-                    room.occupants.append(person)
-                    allocated = True
-                    break
-                elif room.room_type == "Living Space" and not room.full() \
-                        and person.role == "Fellow":
-                    room.occupants.append(person)
-                    allocated = True
-                    break
-                elif room.room_type == "Office" and not room.full():
-                    room.occupants.append(person)
-                    allocated = True
-                    break
-                else:
-                    break
+                cprint("There are no offices available at the moment",
+                       'yellow')
+            # Allocate person living space if wants accomodation
+            if (living_spaces and person.role == "Fellow" and
+                    person.wants_accomodation == "Y"):
+                room = random.choice(living_spaces)
+                room.occupants.append(person)
+                has_living = True
+
+            if ((person.role == "Staff" and has_office) or
+                (person.role == "Fellow" and person.wants_accomodation == "N"
+                 and has_office) or (person.role == "Fellow" and
+                                     person.wants_accomodation == "Y" and has_office and has_living)):
+                person.current_room = room.room_name
+                self.allocated_members.append(person)
+                message = ("{} successfully allocated {}".format(
+                    person.person_name, room.room_name))
+                cprint(message, 'green')
+            elif ((person.role == "Fellow" and person.wants_accomodation == "Y"
+                   and has_office and not has_living)):
+                person.current_room = room.room_name
+                self.unallocated_members.append(person)
+                cprint("Your office is {}.".format(
+                    person.current_room), 'green')
+                cprint("{} was added to the waiting list".format(
+                    person.person_name))
+            else:
+                self.unallocated_members.append(person)
+                cprint("{} was added to the waiting list".format(
+                    person.person_name), '')
+            return
         else:
             cprint("There are no rooms to allocate", 'yellow')
-
-        if not allocated:
             self.unallocated_members.append(person)
-            cprint("Sorry {}. We couldn't find a suitable room for you"
-                   .format(person.person_name), 'yellow')
-            message = ("{} was added to the waiting list".format(
-                person.person_name))
-            cprint(message, 'green')
-        else:
-            person.current_room = room.room_name
-            self.allocated_members.append(person)
-            message = ("{} successfully allocated {}".format(
-                person.person_name, room.room_name))
-            cprint(message, 'green')
-
-        return message
+            return "No rooms available"
 
     def reallocate_person(self, person_name, room_name):
         """Transfers person to a different room."""
@@ -225,9 +225,6 @@ class Amity(object):
                 for occupant in room.occupants:
                     output += occupant.person_name + ", "
                 output += ('\n\n\n')
-            else:
-                cprint("There are no allocations to display", 'yellow')
-
         print(output)
 
         if filename:
