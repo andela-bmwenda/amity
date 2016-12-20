@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Usage:
-    amity create_room <room_name>...
+    amity create_room (<room_name> <room_type>)...
     amity add_person <first_name> <last_name> (Fellow | Staff) [--wants_accomodation=(Y | N)]
     amity print_allocations [-output=<filename>]
     amity reallocate_person <first_name> <last_name> <room_name>
