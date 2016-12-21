@@ -1,11 +1,12 @@
 import os
-import random
 import pickle
+import random
 import sqlite3
 from termcolor import cprint
+from app.db import AmityDb
+from environment import ROOT_DIR
 from .person import Fellow, Staff
 from .room import Office, LivingSpace
-from app.db import AmityDb
 
 global db
 
@@ -90,24 +91,21 @@ class Amity(object):
                                      person.wants_accomodation == "Y" and has_office and has_living)):
                 person.current_room = room.room_name
                 self.allocated_members.append(person)
-                message = ("{} successfully allocated {}".format(
-                    person.person_name, room.room_name))
-                cprint(message, 'green')
+                cprint("{} successfully allocated {}".format(
+                    person.person_name, room.room_name), 'green')
             elif ((person.role == "Fellow" and person.wants_accomodation == "Y"
                    and has_office and not has_living)):
                 person.current_room = room.room_name
                 self.unallocated_members.append(person)
-                cprint("Your office is {}.".format(
-                    person.current_room), 'green')
+                cprint("Your office is {}. Living space was not found"
+                       .format(room.room_name), 'green')
                 cprint("{} was added to the waiting list".format(
-                    person.person_name))
+                    person.person_name), 'green')
             else:
                 self.unallocated_members.append(person)
-                cprint("{} was added to the waiting list".format(
-                    person.person_name), '')
-            return
         else:
-            cprint("There are no rooms to allocate", 'yellow')
+            cprint("There are no rooms to allocate. {} was added to"
+                   .format(person.person_name) + " the waiting list", 'yellow')
             self.unallocated_members.append(person)
             return "No rooms available"
 
@@ -135,7 +133,7 @@ class Amity(object):
                    .format(room[0].room_name), 'yellow')
             return "Staff cannot be allocated living space"
         elif (room[0].room_type == "Living Space" and room[0].full()) \
-                or (room[0].room_type == "Office" and room.full()):
+                or (room[0].room_type == "Office" and room[0].full()):
             cprint("{} is full. Try again later".format(
                 room[0].room_name), 'yellow')
             return "Room is full"
@@ -164,7 +162,7 @@ class Amity(object):
 
         if file:
             path = os.path.join(os.path.dirname(__file__), file)
-            with open(path, 'w') as f:
+            with open(file, 'w') as f:
                 f.write(text)
             cprint("Successfully saved unallocated people to {} ".format(
                 path), 'green')
@@ -229,7 +227,7 @@ class Amity(object):
 
         if filename:
             path = os.path.join(os.path.dirname(__file__), filename)
-            with open(path, 'w') as f:
+            with open(filename, 'w') as f:
                 f.write(output)
             cprint("Successfully saved allocations data to {}".format(path), 'green')
             return "Allocations successfully saved to file"
@@ -238,18 +236,17 @@ class Amity(object):
     def load_people(self, filename):
         """Allocates people rooms from a plain text file."""
 
-        path = os.path.join(os.path.dirname(__file__), filename)
-        if os.path.exists(path):
-            with open(path, 'r') as f:
+        try:
+            with open(filename, 'r') as f:
                 people = f.readlines()
             for person in people:
                 params = person.split() + ['N']
                 self.add_person(params[0], params[1], params[2], params[3])
-        else:
-            cprint("File not found. Remember to add the file extension, \
-                eg .txt or .csv", 'yellow')
+            cprint("Successfully loaded people from {0}".format(
+                ROOT_DIR + '/' + filename), 'green')
+        except:
+            cprint("File not found in the path specified", 'red')
             return "Error. File not found"
-        return "Successfully loaded people from file"
 
     def save_state(self, db_name):
         """"Saves application data to database."""
@@ -258,7 +255,6 @@ class Amity(object):
                 and not self.unallocated_members:
             cprint("There is no data to save at the moment", 'yellow')
             return "No data"
-        path = os.path.join(os.path.dirname(__file__), db_name + ".db")
         # Create db
         db = AmityDb(db_name)
         db.create_tables()
@@ -299,14 +295,13 @@ class Amity(object):
                       unallocated,
                       state
                       )
-        cprint("Saved app data to {}".format(path), 'green')
+        cprint("Saved app data to {}".format(ROOT_DIR), 'green')
         return "Save state successful"
 
     def load_state(self, db_path):
         """Loads application data from the database."""
 
         # Search for db and establish connection
-        path = os.path.join(os.path.dirname(__file__), db_path + ".db")
         if os.path.exists(db_path):
             db = AmityDb(db_path)
             if db.read_data():
@@ -314,7 +309,8 @@ class Amity(object):
                 self.list_of_rooms = app_data[0]
                 self.allocated_members = app_data[1]
                 self.unallocated_members = app_data[2]
-                cprint("Successfully loaded app data from {}".format(path), 'green')
+                cprint("Successfully loaded app data from {}".format(
+                    ROOT_DIR), 'green')
                 return "Load state successful"
             else:
                 cprint("Error. Database does not have a saved state", 'red')
