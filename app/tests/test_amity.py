@@ -1,4 +1,5 @@
 import unittest
+from mock import patch, mock_open
 from app.amity import Amity
 from app.person import Fellow, Staff
 from app.room import Office, LivingSpace
@@ -73,7 +74,6 @@ class AmityTestCase(unittest.TestCase):
 
         self.amity.list_of_rooms.append(self.office)
         self.amity.add_person("Tom", "Riley", "Fellow")
-        # self.assertEqual(len(self.amity.allocated_members), 1)
         self.assertTrue(self.amity.list_of_rooms[0].occupants[0]
                         .person_name == "Tom Riley".upper())
 
@@ -83,6 +83,14 @@ class AmityTestCase(unittest.TestCase):
         self.amity.list_of_rooms.append(self.office)
         self.amity.add_person("Rick", "James", "Staff")
         self.assertEqual(len(self.amity.allocated_members), 1)
+
+    def test_people_are_loaded_from_file_successfully(self):
+        """Tests ii accepts data from file"""
+
+        with patch("builtins.open", mock_open(read_data="sample text")) as m:
+            self.amity.load_people("file")
+
+        m.assert_called_with("file", 'r')
 
     def test_for_invalid_person_role(self):
         """Tests invalid person role is not allowed"""
@@ -115,8 +123,10 @@ class AmityTestCase(unittest.TestCase):
         self.amity.add_person("Martin", "Luther", "Fellow", "Y")
         self.assertTrue(self.amity.allocated_members[0]
                         .person_name == "Martin Luther".upper())
-        self.assertEqual(self.amity.list_of_rooms[0].occupants[0].person_name, "MARTIN LUTHER")
-        self.assertEqual(self.amity.list_of_rooms[1].occupants[0].person_name, "MARTIN LUTHER")
+        self.assertEqual(self.amity.list_of_rooms[0].occupants[
+                         0].person_name, "MARTIN LUTHER")
+        self.assertEqual(self.amity.list_of_rooms[1].occupants[
+                         0].person_name, "MARTIN LUTHER")
 
     def test_cannot_reallocate_non_existent_person(self):
         """Tests members not allocated cannot be reallocated"""
@@ -217,12 +227,39 @@ class AmityTestCase(unittest.TestCase):
         res = self.amity.print_allocations(None)
         self.assertEqual(res, "Print allocations successful")
 
+    def test_allocations_are_written_to_file(self):
+        """Tests if allocations are saved to file"""
+
+        self.amity.list_of_rooms += [self.office, self.living_space]
+        self.amity.allocated_members += [self.staff, self.fellow, self.fellow2]
+        self.amity.list_of_rooms[0].occupants.append(self.staff)
+        self.amity.list_of_rooms[0].occupants.append(self.fellow)
+        self.amity.list_of_rooms[0].occupants.append(self.fellow2)
+        self.amity.list_of_rooms[1].occupants.append(self.fellow2)
+
+        m = mock_open()
+        with patch('builtins.open', m):
+            self.amity.print_allocations("file")
+        m.assert_called_with("file", 'w')
+
     def test_print_unallocated_people_works(self):
         """Tests unallocated people are printed to screen"""
 
-        self.amity.unallocated_members += [self.fellow, self.fellow2, self.staff]
+        self.amity.unallocated_members += [self.fellow,
+                                           self.fellow2, self.staff]
         res = self.amity.print_unallocated(None)
         self.assertEqual(res, "Print unallocations successful")
+
+    def test_it_prints_unallocated_people_to_file(self):
+        """Tests if unallocated people are saved to file"""
+
+        self.amity.unallocated_members += [self.staff,
+                                           self.fellow, self.fellow2]
+
+        m = mock_open()
+        with patch('builtins.open', m):
+            self.amity.print_unallocated("file")
+        m.assert_called_with("file", 'w')
 
     def test_load_state_from_invalid_path_raises_error(self):
         """Tests load state does not accept invalid path"""
