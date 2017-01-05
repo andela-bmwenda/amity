@@ -81,9 +81,11 @@ LEIGH RILEY STAFF
 This command prints rooms and their occupants to the screen. The command has an optional argument `--output=filename` which allows the user to save the allocations to a text file.
 **Example**
 > print_allocations
+
 This will print the allocations to screen only
 
 > print_allocations --output=sample_text.txt
+
 This will print the allocations to screen and also write to sample_text.txt
 
 **Sample output**
@@ -128,7 +130,7 @@ App data can be loaded from the database using the `load_state` command. The opt
 
 **Screencast**
 Seeing is believing! Here is a screencast of Amity in action.
-[screencast](https://asciinema.org/a/9nk403isnahihvbqj3zvt9v0h)
+[<img width="1280" alt="screen shot 2017-01-05 at 23 27 05" src="https://cloud.githubusercontent.com/assets/23304971/21696462/3a6b264c-d39f-11e6-9cfe-08345cff75fd.png">](https://asciinema.org/a/9nk403isnahihvbqj3zvt9v0h)
 
 ## Testing
 Amity has been tested using the `nose` package. Run `nosetests` in the main directory to run the tests. The app also uses `coverage.py` to asses test coverage. Run `nosetests --with-coverage` to run the tests with coverage information.
