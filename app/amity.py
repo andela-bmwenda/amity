@@ -98,7 +98,7 @@ class Amity(object):
                 person.current_room = room.room_name
                 self.unallocated_members.append(person)
                 cprint("Your office is {}. Living space was not found"
-                       .format(room.room_name), 'green')
+                       .format(room.room_name), 'yellow')
                 cprint("{} was added to the waiting list".format(
                     person.person_name), 'green')
             else:
@@ -161,11 +161,10 @@ class Amity(object):
             cprint("Awesome! There are no people in the waiting list", 'green')
 
         if file:
-            path = os.path.join(os.path.dirname(__file__), file)
             with open(file, 'w') as f:
                 f.write(text)
             cprint("Successfully saved unallocated people to {} ".format(
-                path), 'green')
+                ROOT_DIR + '/' + file), 'green')
             return "Unallocated people successfully saved to file"
         return "Print unallocations successful"
 
@@ -226,10 +225,10 @@ class Amity(object):
         print(output)
 
         if filename:
-            path = os.path.join(os.path.dirname(__file__), filename)
             with open(filename, 'w') as f:
                 f.write(output)
-            cprint("Successfully saved allocations data to {}".format(path), 'green')
+            cprint("Successfully saved allocations data to {}".format(
+                ROOT_DIR + '/' + filename), 'green')
             return "Allocations successfully saved to file"
         return "Print allocations successful"
 
@@ -295,7 +294,8 @@ class Amity(object):
                       unallocated,
                       state
                       )
-        cprint("Saved app data to {}".format(ROOT_DIR), 'green')
+        cprint("Saved app data to {}".format(
+            ROOT_DIR + '/' + db_name), 'green')
         return "Save state successful"
 
     def load_state(self, db_path):
@@ -310,7 +310,7 @@ class Amity(object):
                 self.allocated_members = app_data[1]
                 self.unallocated_members = app_data[2]
                 cprint("Successfully loaded app data from {}".format(
-                    ROOT_DIR), 'green')
+                    ROOT_DIR + '/' + db_path), 'green')
                 return "Load state successful"
             else:
                 cprint("Error. Database does not have a saved state", 'red')
