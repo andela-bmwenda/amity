@@ -129,7 +129,9 @@ App data can be loaded from the database using the `load_state` command. The opt
 > load_state --database=my_database.db
 
 **Screencast**
+
 Seeing is believing! Here is a screencast of Amity in action.
+
 [<img width="1280" alt="screen shot 2017-01-05 at 23 27 05" src="https://cloud.githubusercontent.com/assets/23304971/21696462/3a6b264c-d39f-11e6-9cfe-08345cff75fd.png">](https://asciinema.org/a/9nk403isnahihvbqj3zvt9v0h)
 
 ## Testing
