@@ -25,7 +25,7 @@ Amity also uses [sqlite3 database](https://sqlite.org/) which should be installe
 All dependencies are listed in `requirements.txt`.
 
 ## INSTALLATION
-Installing Amity is fast and easy. 
+Installing Amity is fast and easy.
 - Get the source code from github using [this link](https://github.com/andela-bmwenda/amity-cp1).
 - Clone the repo using your preferred method, either `ssh` or `https`.
 - Navigate to the root folder `cd amity-cp1`
@@ -139,6 +139,7 @@ Amity has been tested using the `nose` package. Run `nosetests` in the main dire
 
 ## To Do
 - Load people from unallocated list once new rooms become available
+- Unload people from rooms
 
 ## License
 Amity uses the MIT license. Feel free to fork the repo and add your awesome features. Feel free to open issues incase you spot bugs.
